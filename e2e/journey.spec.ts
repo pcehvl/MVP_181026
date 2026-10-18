@@ -102,3 +102,27 @@ test('AC1/AC4 — phone width 320px: no horizontal scrolling on map or step', as
   ).toBeVisible()
   expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0)
 })
+
+/**
+ * US-007 AC1 — with no Supabase project configured (this environment), the
+ * optional save-across-phones feature must be invisible: the journey is
+ * exactly the US-006 build and Question 1 gains no account UI at all.
+ * Spec: product/stories/US-007-optional-save-across-phones/spec.md (ready).
+ */
+test('US-007 AC1 — no account UI anywhere while no backend is configured', async ({ page }) => {
+  await page.goto('/')
+  // Question 1 is byte-for-byte unchanged: no sign-in, no email field.
+  await expect(page.getByText('Question 1 of 3')).toBeVisible()
+  await expect(page.getByText(/keep my journey/i)).toHaveCount(0)
+  await expect(page.getByLabel(/your email address/i)).toHaveCount(0)
+
+  await answerIntakeToMap(page)
+  await expect(page.getByText(/keep my journey/i)).toHaveCount(0)
+  await expect(page.getByText(/your journey is saved to your account/i)).toHaveCount(0)
+
+  await page.getByRole('button', { name: /see my practical next step/i }).click()
+  await expect(
+    page.getByRole('heading', { name: /3-sentence introduction/i }),
+  ).toBeVisible()
+  await expect(page.getByText(/keep my journey/i)).toHaveCount(0)
+})

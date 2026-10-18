@@ -17,7 +17,12 @@ import type { IntakeAnswers } from './intake'
 
 export const STORAGE_KEY = 'mvp-journey-answers-v1'
 
-function isIntakeAnswers(value: unknown): value is IntakeAnswers {
+/**
+ * Shape check for saved answers (US-006 AC5 "never hand garbage to the
+ * journey"). Exported for US-007: answers loaded from the server go through
+ * the same validation before they enter the journey.
+ */
+export function isIntakeAnswers(value: unknown): value is IntakeAnswers {
   if (typeof value !== 'object' || value === null) return false
   const candidate = value as Record<string, unknown>
   return (
@@ -25,6 +30,23 @@ function isIntakeAnswers(value: unknown): value is IntakeAnswers {
     typeof candidate.area === 'string' &&
     Array.isArray(candidate.selectedWork) &&
     candidate.selectedWork.every((item) => typeof item === 'string')
+  )
+}
+
+/**
+ * US-007 AC3 — are two answer sets the same journey? Used to decide whether
+ * signing in introduces a conflict (saved vs this phone) or is a no-op.
+ * Work selections compare as sets: the order checkboxes were ticked is not
+ * meaningful (US-003 matching ignores selection order anyway).
+ */
+export function answersEqual(a: IntakeAnswers, b: IntakeAnswers): boolean {
+  const workA = [...a.selectedWork].sort()
+  const workB = [...b.selectedWork].sort()
+  return (
+    a.qualification === b.qualification &&
+    a.area === b.area &&
+    workA.length === workB.length &&
+    workA.every((item, index) => item === workB[index])
   )
 }
 

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import type { IntakeAnswers } from './intake'
 import {
   STORAGE_KEY,
+  answersEqual,
   clearAnswers,
   loadAnswers,
   saveAnswers,
@@ -93,5 +94,33 @@ describe('persistence (US-006 AC5)', () => {
         configurable: true,
       })
     }
+  })
+})
+
+describe('answersEqual (US-007 AC3 conflict detection)', () => {
+  it('treats identical answers as equal', () => {
+    expect(answersEqual(answers, { ...answers })).toBe(true)
+  })
+
+  it('ignores the order work types were ticked (not meaningful to matching)', () => {
+    expect(
+      answersEqual(answers, {
+        ...answers,
+        selectedWork: [...answers.selectedWork].reverse(),
+      }),
+    ).toBe(true)
+  })
+
+  it('flags a different area or qualification as a conflict', () => {
+    expect(answersEqual(answers, { ...answers, area: 'Delft' })).toBe(false)
+    expect(
+      answersEqual(answers, { ...answers, qualification: 'No schooling' }),
+    ).toBe(false)
+  })
+
+  it('flags different work selections as a conflict', () => {
+    expect(
+      answersEqual(answers, { ...answers, selectedWork: ['Cleaning'] }),
+    ).toBe(false)
   })
 })
