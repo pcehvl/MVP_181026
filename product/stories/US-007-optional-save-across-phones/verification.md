@@ -61,8 +61,17 @@ Per the shared verification approach these are recorded as not run, never as pas
 1. **M1** Create a Supabase project (free tier) and install the Supabase CLI. Expected: project ref available.
 2. **M2** `supabase link --project-ref <ref>` then `supabase db push`. Expected: `profiles` table exists with RLS enabled.
 3. **M3** In the SQL editor: as user A, `select * from profiles` returns only A's row; inserting a row with B's `user_id` is rejected. Expected: only own data.
-4. **M4** `supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<key>` then `supabase functions deploy delete-account`. Expected: function deployed.
+4. **M4** `supabase functions deploy delete-account`. Expected: function deployed. (No manual secret: Supabase injects `SUPABASE_SERVICE_ROLE_KEY` into Edge Functions automatically.)
 5. **M5** Set `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` in Vercel (and local `.env`), redeploy. Expected: the map/step offers appear; a magic link signs in; the saved journey loads on a second phone; "Delete my account and data" removes the account, the row and the local save.
+
+## Follow-up verification (same branch, after the tested commit)
+
+Two changes were made after `53f3b77` and the affected checks were re-run:
+
+- **Test determinism guard** (`vitest.config.ts`, `playwright.config.ts`): once a developer's `.env.local` holds the Supabase values, the unconfigured-journey tests must not change behaviour. Vitest now pins the two `VITE_SUPABASE_*` variables empty for tests, and Playwright forces them empty for the dev server it spawns. Verified by temporarily adding dummy values to `.env.local`: **E2E 5/5 PASS** (fresh server spawned) and **unit 97/97 PASS**; `.env.local` then restored byte-for-byte.
+- **Edge Function key fallback** (`supabase/functions/delete-account/index.ts`): accepts the newer `SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` names as a fallback to the legacy `SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` injected by Supabase.
+
+Full `npm run verify` re-run after both changes: **lint PASS · typecheck PASS · 97/97 unit PASS · build PASS · 5/5 E2E PASS**.
 
 ## Plan deviations and known limitations
 

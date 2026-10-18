@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// US-007: the E2E suite exercises the signed-out journey deterministically,
+// regardless of a developer's .env.local. Vite gives an existing process.env
+// value priority over .env files, so forcing these empty keeps the app
+// unconfigured for E2E. The configured (Supabase-linked) path needs a real
+// project — documented manual checks in US-007's verification.md.
+process.env.VITE_SUPABASE_URL = ''
+process.env.VITE_SUPABASE_ANON_KEY = ''
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,

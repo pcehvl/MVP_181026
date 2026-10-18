@@ -31,8 +31,13 @@ Deno.serve(async (req) => {
   }
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    // Legacy key names are injected by Supabase; the newer single-key names
+    // are accepted as a fallback so the function keeps working through the
+    // API-key naming transition.
+    const anonKey =
+      Deno.env.get('SUPABASE_ANON_KEY') ?? Deno.env.get('SUPABASE_PUBLISHABLE_KEY')
+    const serviceKey =
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_SECRET_KEY')
     if (!supabaseUrl || !anonKey || !serviceKey) {
       return respond('Server configuration missing', 500)
     }
