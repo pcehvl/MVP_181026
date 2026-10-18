@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Info, MapPinned } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { NOT_SURE, type IntakeAnswers } from '@/lib/intake'
@@ -24,6 +25,7 @@ export function SkillsMap({
   onRestart,
   onOpenLesson,
   onOpenNextStep,
+  accountSection,
 }: {
   answers: IntakeAnswers
   onRestart: () => void
@@ -31,6 +33,12 @@ export function SkillsMap({
   onOpenLesson?: (family: JobFamily, skillName: string) => void
   /** US-005: opens the journey's closing practical step. Omit to hide it. */
   onOpenNextStep?: () => void
+  /**
+   * US-007: optional account section (sign-in offer / signed-in panel / saved
+   * journey choice) rendered after the journey content. Omit to render the
+   * map exactly as the signed-out US-006 build (AC1).
+   */
+  accountSection?: ReactNode
 }) {
   const match = matchMap(answers)
   const skippedOrNotSure =
@@ -164,6 +172,8 @@ export function SkillsMap({
           </Button>
         </section>
       ) : null}
+
+      {accountSection}
 
       <Button type="button" variant="outline" size="lg" onClick={onRestart}>
         Start again

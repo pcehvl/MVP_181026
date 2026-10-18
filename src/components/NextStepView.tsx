@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Flag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { IntakeAnswers } from '@/lib/intake'
@@ -24,9 +25,16 @@ import { SKILLS_CONTENT } from '@/lib/skills-content'
 export function NextStepView({
   answers,
   onRestart,
+  accountSection,
 }: {
   answers: IntakeAnswers
   onRestart: () => void
+  /**
+   * US-007: optional account section (the main sign-in invitation) rendered
+   * after the step. Omit to render the screen exactly as the signed-out
+   * US-006 build (AC1).
+   */
+  accountSection?: ReactNode
 }) {
   const match = matchMap(answers)
   // AC5: top qualifying family; when none qualifies (near-miss-only map),
@@ -73,6 +81,8 @@ export function NextStepView({
           <strong>{suggestedSkills[1]}</strong>.
         </li>
       </ol>
+
+      {accountSection}
 
       <Button type="button" variant="outline" size="lg" onClick={onRestart}>
         Start again

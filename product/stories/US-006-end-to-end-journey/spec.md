@@ -77,6 +77,12 @@ flow on my phone, so that nothing stops me from trying it.
 - Production hardening including real auth (per MVP out-of-scope); the MVP
   has no account or sign-in, and persistence is browser-local only — no
   server sync (decision, 2026-10-18).
+  - **Superseded in part 2026-10-18 (PO):** an OPTIONAL account feature now
+    exists (US-007) — residents may sign in after the journey or on return
+    to keep their map and introduction across phones. The
+    never-required-sign-in position stands (US-007 AC1); this story's
+    signed-out journey, localStorage persistence and "Start again" wipe are
+    unchanged.
 - Support for employed residents; non-English languages.
 
 ## Open Questions
@@ -102,6 +108,12 @@ return); see UX / UI → Decided Structure.
   best-effort, graceful plain-text degradation elsewhere; abandon + return =
   smallest honest slice (restore answers, land on the map, one tap to
   lessons and next step).
+- **Supersession (2026-10-18):** superseded in part on 2026-10-18 by US-007
+  (PO decision): an optional account feature now exists — residents may sign
+  in after the journey or on return to keep their map and introduction across
+  phones. The never-required-sign-in position stands (US-007 AC1); this
+  story's signed-out journey, localStorage persistence and "Start again" wipe
+  are unchanged.
 - Hypotheses: **H6** primary (the target group can and will use a digital
   tool); also the surface on which H1/H3/H5 testing actually happens — during
   the bootcamp via partner/stakeholder walkthroughs, with residents after.

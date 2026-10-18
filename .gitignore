@@ -38,3 +38,6 @@ blob-report
 # Local tool caches
 .eslintcache
 *.tsbuildinfo
+
+# Vercel CLI local project link (contains no secrets)
+.vercel

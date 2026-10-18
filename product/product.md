@@ -162,6 +162,15 @@ During the bootcamp, evidence is limited to city-partner/stakeholder review
 unvalidated at bootcamp end; the bootcamp proves the slice is buildable and
 plausible, not that it works.
 
+**Scope expansion (decision, Product Owner, 2026-10-18):** after the MVP was
+deployed, an optional post-journey capability was added — residents may sign
+in to keep their map and 3-sentence introduction across phones (US-007).
+Signed-out use remains fully functional: sign-in is never required, and the
+zero-barrier journey is unchanged (so H6 testing stays clean). This relaxes
+the "no real auth" posture below **only** for this optional feature, backed
+by Supabase Auth + Postgres + RLS (its first use in this product); no admin
+tooling or production hardening beyond it is implied.
+
 ## Out of Scope
 
 Consequences of the MVP slice decision (2026-10-18) — excluded from the
